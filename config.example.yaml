@@ -1,0 +1,24 @@
+# viti-mcp configuration
+# Copy to ~/.config/viti-mcp/config.yaml and adjust paths/contexts.
+#
+# Each availability zone connects to one management cluster (kubeconfig).
+# A zone can have multiple MachineProviders (Proxmox, KubeVirt, etc.)
+# and multiple KubernetesProviders (Talos, AKS, etc.) — these are
+# discovered automatically from the CRDs in each cluster.
+
+availabilityZones:
+  # On-premise zone with Proxmox + KubeVirt machine providers and Talos k8s provider
+  - name: no-east-az1
+    kubeconfig: $HOME/.kube/no-east-az1.conf
+    region: no-east
+
+  # On-premise zone with KubeVirt machine provider and Talos k8s provider
+  - name: no-west-az1
+    kubeconfig: $HOME/.kube/no-west-az1.conf
+    region: no-west
+
+  # Azure zone with AKS kubernetes provider
+  - name: norwayeast-az1
+    kubeconfig: $HOME/.kube/norwayeast-az1.conf
+    context: aks-prod-context    # optional: use specific kubeconfig context
+    region: norwayeast

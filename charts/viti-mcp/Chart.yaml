@@ -1,0 +1,13 @@
+apiVersion: v2
+name: viti-mcp
+description: MCP server for VitiStack infrastructure — provides AI assistants with read access to clusters, machines, and providers across datacenters
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - mcp
+  - vitistack
+  - kubernetes
+  - infrastructure
+maintainers:
+  - name: vitistack

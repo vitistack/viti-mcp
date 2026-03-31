@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "viti-mcp.fullname" . }}
+  labels:
+    {{- include "viti-mcp.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    availabilityZones:
+    {{- range .Values.availabilityZones }}
+      - name: {{ .name | quote }}
+        {{- if .existingSecret }}
+        kubeconfig: /etc/viti-mcp/kubeconfigs/{{ .name }}/{{ .existingSecretKey | default "kubeconfig" }}
+        {{- else }}
+        kubeconfig: /etc/viti-mcp/kubeconfigs/{{ .name }}/kubeconfig
+        {{- end }}
+        {{- if .context }}
+        context: {{ .context | quote }}
+        {{- end }}
+        {{- if .region }}
+        region: {{ .region | quote }}
+        {{- end }}
+    {{- end }}

@@ -1,0 +1,35 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug viti-mcp",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/viti-mcp/main.go",
+      "cwd": "${workspaceFolder}",
+      "debugAdapter": "dlv-dap",
+      "args": ["--config", "${workspaceFolder}/config.yaml"],
+      "console": "integratedTerminal"
+    },
+    {
+      "name": "Debug viti-mcp (custom config)",
+      "type": "go",
+      "request": "launch",
+      "mode": "auto",
+      "program": "${workspaceFolder}/cmd/viti-mcp/main.go",
+      "cwd": "${workspaceFolder}",
+      "debugAdapter": "dlv-dap",
+      "args": ["--config", "${input:configPath}"],
+      "console": "integratedTerminal"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "configPath",
+      "type": "promptString",
+      "description": "Path to viti-mcp config.yaml",
+      "default": "${env:HOME}/.config/viti-mcp/config.yaml"
+    }
+  ]
+}

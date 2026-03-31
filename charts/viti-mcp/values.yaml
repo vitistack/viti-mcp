@@ -1,0 +1,101 @@
+replicaCount: 1
+
+image:
+  repository: ghcr.io/vitistack/viti-mcp
+  tag: ""  # defaults to appVersion
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+# -- Transport mode. Must be "sse" for Kubernetes deployment.
+transport: sse
+
+# -- Port the SSE server listens on.
+port: 8080
+
+# -- Base URL for the SSE server (used in MCP client config).
+# Set this to the external URL if behind an ingress.
+# If empty, defaults to http://localhost:<port>
+baseURL: ""
+
+# -- Availability zone connections.
+# Each entry connects to one management cluster. A zone can have
+# multiple MachineProviders and KubernetesProviders — those are
+# discovered automatically from the CRDs in each cluster.
+availabilityZones:
+  []
+  # - name: no-east-az1
+  #   region: no-east
+  #   # kubeconfig content (will be stored in a Secret)
+  #   kubeconfig: ""
+  #   # OR reference an existing secret containing the kubeconfig
+  #   existingSecret: ""
+  #   # key in the existing secret (default: "kubeconfig")
+  #   existingSecretKey: kubeconfig
+  #   # optional: kubeconfig context to use
+  #   context: ""
+
+serviceAccount:
+  create: true
+  name: ""
+  annotations: {}
+
+# -- For cross-cluster access, create ClusterRole and ClusterRoleBinding
+# for reading VitiStack CRDs on the LOCAL cluster.
+# Remote cluster RBAC must be configured separately in each availability zone.
+rbac:
+  create: true
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  className: ""
+  annotations: {}
+  hosts:
+    - host: viti-mcp.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls: []
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 64Mi
+  limits:
+    memory: 256Mi
+
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+podAnnotations: {}
+podLabels: {}
+podSecurityContext: {}
+securityContext:
+  allowPrivilegeEscalation: false
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 65534
+  capabilities:
+    drop:
+      - ALL
+
+livenessProbe:
+  httpGet:
+    path: /sse
+    port: http
+  initialDelaySeconds: 5
+  periodSeconds: 30
+
+readinessProbe:
+  httpGet:
+    path: /sse
+    port: http
+  initialDelaySeconds: 3
+  periodSeconds: 10
