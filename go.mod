@@ -4,7 +4,7 @@ go 1.26.1
 
 require (
 	github.com/mark3labs/mcp-go v0.46.0
-	github.com/vitistack/common v0.8.51
+	github.com/vitistack/common v0.8.54
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.35.3
 	k8s.io/client-go v0.35.3
