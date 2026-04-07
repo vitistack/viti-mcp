@@ -4,7 +4,6 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -12,6 +11,7 @@ import (
 
 	"github.com/mark3labs/mcp-go/mcp"
 	"github.com/mark3labs/mcp-go/server"
+	"github.com/vitistack/common/pkg/loggers/vlog"
 	"github.com/vitistack/viti-mcp/internal/config"
 	"github.com/vitistack/viti-mcp/internal/k8s"
 	"github.com/vitistack/viti-mcp/internal/tools"
@@ -35,19 +35,19 @@ func main() {
 	if *configPath == "" {
 		home, err := os.UserHomeDir()
 		if err != nil {
-			log.Fatalf("Error getting home directory: %v", err)
+			vlog.Fatalf("Error getting home directory: %v", err)
 		}
 		*configPath = home + "/.config/viti-mcp/config.yaml"
 	}
 
 	cfg, err := config.Load(*configPath)
 	if err != nil {
-		log.Fatalf("Error loading config: %v", err)
+		vlog.Fatalf("Error loading config: %v", err)
 	}
 
 	mgr, err := k8s.NewManager(cfg)
 	if err != nil {
-		log.Fatalf("Error creating K8s manager: %v", err)
+		vlog.Fatalf("Error creating K8s manager: %v", err)
 	}
 
 	s := server.NewMCPServer(
@@ -88,13 +88,13 @@ Start with 'list_zones' to see available availability zones, or 'infrastructure_
 
 	tools.Register(s, mgr)
 
-	log.Printf("Starting viti-mcp server (version %s) with %d availability zone(s), transport=%s",
+	vlog.Infof("Starting viti-mcp server (version %s) with %d availability zone(s), transport=%s",
 		version, len(cfg.AvailabilityZones), *transport)
 
 	switch *transport {
 	case "stdio":
 		if err := server.ServeStdio(s); err != nil {
-			log.Fatalf("Server error: %v", err)
+			vlog.Fatalf("Server error: %v", err)
 		}
 	case "sse":
 		addr := ":" + *port
@@ -119,19 +119,19 @@ Start with 'list_zones' to see available availability zones, or 'infrastructure_
 			sigCh := make(chan os.Signal, 1)
 			signal.Notify(sigCh, syscall.SIGINT, syscall.SIGTERM)
 			<-sigCh
-			log.Println("Shutting down SSE server...")
+			vlog.Info("Shutting down SSE server...")
 			ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 			defer cancel()
 			if err := sseServer.Shutdown(ctx); err != nil {
-				log.Printf("Shutdown error: %v", err)
+				vlog.Errorf("Shutdown error: %v", err)
 			}
 		}()
 
-		log.Printf("SSE server listening on %s", addr)
+		vlog.Infof("SSE server listening on %s", addr)
 		if err := sseServer.Start(addr); err != nil {
-			log.Fatalf("SSE server error: %v", err)
+			vlog.Fatalf("SSE server error: %v", err)
 		}
 	default:
-		log.Fatalf("Unknown transport: %s (use stdio or sse)", *transport)
+		vlog.Fatalf("Unknown transport: %s (use stdio or sse)", *transport)
 	}
 }
