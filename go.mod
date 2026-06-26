@@ -3,7 +3,7 @@ module github.com/vitistack/viti-mcp
 go 1.26.4
 
 require (
-	github.com/mark3labs/mcp-go v0.55.0
+	github.com/mark3labs/mcp-go v0.55.1
 	github.com/vitistack/common v0.8.71
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.36.2
