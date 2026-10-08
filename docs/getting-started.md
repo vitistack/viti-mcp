@@ -4,7 +4,7 @@ An MCP (Model Context Protocol) server that gives AI assistants (Claude Code, Gi
 
 ## Prerequisites
 
-- Go 1.26+
+- Go 1.27+
 - `kubectl` access to one or more VitiStack management clusters
 - Kubeconfig files for each availability zone you want to connect
 
